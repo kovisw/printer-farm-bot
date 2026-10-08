@@ -140,6 +140,13 @@ if time.time() - last_edit > 1.5:
 
 **Решение:** закомментировать активный `[led chamber_light]` в `printer.cfg`, затем `NEW_RESTART` (не `RESTART`). Повторять после каждой перезагрузки, пока не обновлен Forge-X. Подробности — [11-HISTORY](11-HISTORY.md), грабля 9.
 
+---
+
+### 15. Локально камеры в Fluidd не работают, через сервер — работают
+**Причина:** `stream_url` в Moonraker = `/pN/webcam/...`, а busybox `httpd` принтера знает только `/webcam/` → `404`.
+
+**Решение:** строка `P:/pN/webcam/:localhost:8080/` в `httpd.conf` принтера и перезапуск `httpd` (см. [06-PRINTERS](06-PRINTERS.md), «Вебкамеры»).
+
 ## 🟢 Полезные диагностические команды
 
 ```bash

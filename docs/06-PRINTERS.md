@@ -82,9 +82,24 @@ POST /server/files/upload  (root=config, filename=mod_data/user.moonraker.conf)
 ```
 Файл `user.moonraker.conf` — **не reserved**, обновляется через API без SSH. Содержит `cors_domains: *` и `trusted_clients: 0.0.0.0/0` по умолчанию (Forge-X).
 
-## Вебкамеры (MJPEG через nginx принтера)
+## Вебкамеры (MJPEG через busybox httpd принтера)
 
-Каждый принтер запускает `mjpg_streamer` на `:80`, путь `/webcam/?action=stream`.
+На принтере `mjpg_streamer` слушает `localhost:8080`, наружу его отдает busybox `httpd` на `:80` (nginx там нет). `httpd` работает в chroot `/data/.mod/.forge-x`, конфиг — `/data/.mod/.forge-x/etc/httpd.conf`:
+
+```
+P:/webcam/:localhost:8080/
+P:/p1/webcam/:localhost:8080/     # на втором принтере — /p2/webcam/
+```
+
+Вторая строка нужна, чтобы камера работала и в Fluidd на сервере, и в локальном Fluidd принтера (см. [11-HISTORY](11-HISTORY.md), грабля 10). Файл принадлежит Forge-X — после обновления мода проверить, что строка на месте.
+
+`httpd` не перечитывает конфиг по HUP, нужен перезапуск (в SSH-сессии `chroot` не в PATH):
+```sh
+kill $(cat /data/.mod/.forge-x/run/httpd.pid); sleep 1
+/usr/sbin/chroot /data/.mod/.forge-x /opt/config/mod/.root/S70httpd start
+```
+
+> `mjpg_streamer` не любит частые переподключения: несколько запросов подряд дают пустой ответ даже на `/webcam/`. Проверять с паузой в пару секунд.
 
 ### Через Caddy (HTTPS):
 ```

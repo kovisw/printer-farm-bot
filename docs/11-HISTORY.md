@@ -72,3 +72,10 @@ API_TIMEOUT = aiohttp.ClientTimeout(total=3.0, connect=1.5)
 - постоянное решение — Forge-X 1.4.2 (в Beta 4 исправлены и дубль chamber light, и зависание экрана после `RESTART`), жду финальный релиз;
 - на втором принтере уже лежал скачанный `software-5.1.9.tar.xz` — убрал его из `/opt/PROGRAM/software`, пока не установился;
 - на роутере закрыл серверы обновлений через dnsmasq (`update.voxelshare.com`, `update.flashforge.com`, `update.sz3dp.com`, `update.cn.sz3dp.com`), облако Flashforge при этом работает.
+
+### 10. Камеры в локальном Fluidd пропали после переезда на общий Fluidd
+Чтобы камеры заработали в Fluidd на сервере, `stream_url` в Moonraker поменял на `/pN/webcam/?action=stream`. Настройка одна на все клиенты, и локальный Fluidd (`http://192.168.10.101`) стал искать `/p1/webcam/` на самом принтере — там такого пути нет, `404`.
+
+Думал править nginx на принтере, а его там нет: веб отдает busybox `httpd`, камера проксируется строкой `P:/webcam/:localhost:8080/` в его `httpd.conf`. Добавил рядом `P:/p1/webcam/:localhost:8080/` — теперь один и тот же путь работает и локально, и через сервер.
+
+Еще два момента: `kill -HUP` конфиг не перечитывает (нужен полный перезапуск `httpd`), а в SSH-сессии принтера `chroot` не в PATH — запуск по `/usr/sbin/chroot`. Пока этого не знал, на минуту оставил принтер без веб-морды.

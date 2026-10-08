@@ -1,0 +1,15 @@
+# секреты
+.env
+sing-box-config.json
+
+# python
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# прочее
+.vscode/
+.idea/
+*.tar.gz
+*.gcode

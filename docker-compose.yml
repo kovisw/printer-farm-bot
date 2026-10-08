@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  bot:
+    build: .
+    container_name: 3dprinter_bot
+    restart: unless-stopped
+    depends_on:
+      - proxy
+    env_file:
+      - .env
+
+  proxy:
+    image: ghcr.io/sagernet/sing-box:latest
+    container_name: 3dprinter_proxy
+    restart: unless-stopped
+    command: run -c /etc/sing-box/config.json
+    volumes:
+      - ./sing-box-config.json:/etc/sing-box/config.json
+

@@ -1,0 +1,9 @@
+.env
+.git
+venv
+.venv
+__pycache__
+docs
+scripts
+sing-box-config*.json
+*.md

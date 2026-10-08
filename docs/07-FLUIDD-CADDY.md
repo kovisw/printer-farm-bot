@@ -97,12 +97,12 @@ printer.example.com → 192.168.1.204
 LAN/VPN-клиенты ходят сразу на atlas, не через hairpin.
 
 ### На роутере kovis (Routerich)
-**НЕ настроен** для `printer.example.com`. Если настроить:
+Настроен:
 ```bash
 uci add_list dhcp.@dnsmasq[0].address='/printer.example.com/192.168.1.204'
 uci commit dhcp; /etc/init.d/dnsmasq restart
 ```
-...то трафик пойдёт через WG-туннель, но подсеть `192.168.10.0/24` всё равно не в whitelist Caddy.
+Трафик идет в WG-туннель, роутер маскарадит его в свой адрес `10.10.10.2`, а он в whitelist Caddy — добавлять `192.168.10.0/24` не нужно. Без этой записи имя резолвится в публичный IP, запрос идет через интернет и Caddy отвечает `403`. После правки на ПК — `ipconfig /flushdns`.
 
 ## Caddy Runbook
 

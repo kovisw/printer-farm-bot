@@ -147,6 +147,13 @@ if time.time() - last_edit > 1.5:
 
 **Решение:** строка `P:/pN/webcam/:localhost:8080/` в `httpd.conf` принтера и перезапуск `httpd` (см. [06-PRINTERS](06-PRINTERS.md), «Вебкамеры»).
 
+---
+
+### 16. Fluidd из сети принтеров отдает 403
+**Причина:** роутер резолвит `printer.example.com` в публичный IP, запрос идет мимо туннеля.
+
+**Решение:** dnsmasq-запись на роутере с внутренним адресом сервера (см. [07-FLUIDD-CADDY](07-FLUIDD-CADDY.md), «DNS»), на ПК `ipconfig /flushdns`.
+
 ## 🟢 Полезные диагностические команды
 
 ```bash

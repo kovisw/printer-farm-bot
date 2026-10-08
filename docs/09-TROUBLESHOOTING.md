@@ -138,7 +138,12 @@ if time.time() - last_edit > 1.5:
 ### 14. E0120 на экране, `pin PA8 used multiple times in config`
 **Причина:** заводская прошивка (после самообновления до 5.1.9) подменила `printer.base.cfg` и дописала в `printer.cfg` второй блок света на `PA8`.
 
-**Решение:** закомментировать активный `[led chamber_light]` в `printer.cfg`, затем `NEW_RESTART` (не `RESTART`). Повторять после каждой перезагрузки, пока не обновлен Forge-X. Подробности — [11-HISTORY](11-HISTORY.md), грабля 9.
+**Решение:** в самое начало `printer.cfg`, до `[include printer.base.cfg]`, добавить
+```ini
+[duplicate_pin_override]
+pins: PA8
+```
+и оставить в `printer.cfg` один активный `[led chamber_light]`. Перезагрузить принтер по питанию — так заводской экран поднимается вместе с Klipper. Комментировать блок бесполезно: прошивка дописывает новый при каждой загрузке. Подробности — [11-HISTORY](11-HISTORY.md), грабля 9.
 
 ---
 
